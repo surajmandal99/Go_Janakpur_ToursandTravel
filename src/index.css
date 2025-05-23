@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+}
+
+/* Calendar Input Styling */
+input[type="date"] {
+  @apply appearance-none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+}
+
+input[type="date"]::-webkit-datetime-edit {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+input[type="date"]::-webkit-datetime-edit-text {
+  @apply text-gray-500 dark:text-gray-400;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+  @apply hidden;
+}
+
+/* Search Container Enhancement */
+.search-container {
+  @apply relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/20 dark:border-gray-700/20;
+  transition: all 0.3s ease;
+}
+
+.search-container:hover {
+  @apply bg-white dark:bg-gray-800 shadow-2xl;
+}
+
+/* Video Background */
+.video-background {
+  @apply absolute inset-0 w-full h-full object-cover;
+  filter: brightness(0.8);
+}
+
+/* Dark mode transitions */
+.dark .transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
