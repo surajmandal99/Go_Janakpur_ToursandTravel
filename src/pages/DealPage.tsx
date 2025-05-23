@@ -11,7 +11,7 @@ const DealPage: React.FC = () => {
   const [guests, setGuests] = useState(2);
   const [checkIn, setCheckIn] = useState('');
   const deal = deals.find(d => d.id === id);
-  
+
   // Base price per person
   const basePricePerPerson = 799;
   const originalPricePerPerson = 999;
@@ -24,7 +24,8 @@ const DealPage: React.FC = () => {
     }
   };
 
-  const handleBooking = () => {
+  const handleBooking = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!deal || !checkIn) {
       alert('Please select a check-in date');
       return;
@@ -145,10 +146,7 @@ const DealPage: React.FC = () => {
                 <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
                   Book This Deal
                 </h3>
-                <form className="space-y-4" onSubmit={(e) => {
-                  e.preventDefault();
-                  handleBooking();
-                }}>
+                <form onSubmit={handleBooking} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Check-in Date
@@ -161,6 +159,7 @@ const DealPage: React.FC = () => {
                       required
                     />
                   </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Number of Guests
