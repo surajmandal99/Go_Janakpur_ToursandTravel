@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, Check, Info } from 'lucide-react';
+import { Clock, Check, Info, Minus, Plus } from 'lucide-react';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import { deals } from '../data/mockData';
@@ -11,15 +11,30 @@ const DealPage: React.FC = () => {
   const [guests, setGuests] = useState(2);
   const [checkIn, setCheckIn] = useState('');
   const deal = deals.find(d => d.id === id);
+  
+  // Base price per person
+  const basePricePerPerson = 799;
+  const originalPricePerPerson = 999;
+
+  const handleGuestChange = (increment: boolean) => {
+    if (increment && guests < 10) {
+      setGuests(prev => prev + 1);
+    } else if (!increment && guests > 1) {
+      setGuests(prev => prev - 1);
+    }
+  };
 
   const handleBooking = () => {
-    if (!deal) return;
+    if (!deal || !checkIn) {
+      alert('Please select a check-in date');
+      return;
+    }
 
     const booking = {
       propertyName: deal.title,
       checkIn,
       guests,
-      totalAmount: 799, // Example price, you can calculate based on deal
+      totalAmount: basePricePerPerson * guests,
       dealId: deal.id,
       dealTitle: deal.title
     };
@@ -150,25 +165,39 @@ const DealPage: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Number of Guests
                     </label>
-                    <select 
-                      value={guests}
-                      onChange={(e) => setGuests(Number(e.target.value))}
-                      className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
-                    >
-                      {[1, 2, 3, 4, 5].map(num => (
-                        <option key={num} value={num}>{num} Guest{num !== 1 ? 's' : ''}</option>
-                      ))}
-                    </select>
+                    <div className="flex items-center space-x-4">
+                      <button
+                        type="button"
+                        onClick={() => handleGuestChange(false)}
+                        className="p-2 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        <Minus size={16} />
+                      </button>
+                      <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                        {guests}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleGuestChange(true)}
+                        className="p-2 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        <Plus size={16} />
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-600 dark:text-gray-300">Original Price</span>
-                      <span className="text-gray-600 dark:text-gray-300 line-through">$999</span>
+                      <span className="text-gray-600 dark:text-gray-300 line-through">
+                        ${originalPricePerPerson * guests}
+                      </span>
                     </div>
                     <div className="flex justify-between mb-4">
                       <span className="font-semibold text-gray-800 dark:text-white">Deal Price</span>
-                      <span className="font-semibold text-primary-light dark:text-primary-dark">$799</span>
+                      <span className="font-semibold text-primary-light dark:text-primary-dark">
+                        ${basePricePerPerson * guests}
+                      </span>
                     </div>
                     <Button variant="secondary" fullWidth type="submit">
                       Book Now

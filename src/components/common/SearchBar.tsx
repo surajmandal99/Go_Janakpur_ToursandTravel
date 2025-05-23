@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Calendar, Users, X } from 'lucide-react';
+import { Search, Calendar, Users, X, Minus, Plus } from 'lucide-react';
 import Button from './Button';
 
 interface SearchBarProps {
@@ -11,6 +11,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [checkIn, setCheckIn] = useState<string>('');
   const [checkOut, setCheckOut] = useState<string>('');
   const [guests, setGuests] = useState(2);
+  const [isGuestDropdownOpen, setIsGuestDropdownOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -28,6 +29,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     setCheckIn('');
     setCheckOut('');
     setGuests(2);
+  };
+
+  const handleGuestChange = (increment: boolean) => {
+    if (increment && guests < 10) {
+      setGuests(prev => prev + 1);
+    } else if (!increment && guests > 1) {
+      setGuests(prev => prev - 1);
+    }
   };
 
   return (
@@ -92,25 +101,40 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         {/* Guests */}
         <div className="p-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Guests</label>
-          <div className="flex items-center">
-            <Users className="text-gray-400 mr-2" size={18} />
-            <div className="flex items-center space-x-3">
-              <button 
-                type="button"
-                className="w-8 h-8 rounded-full flex items-center justify-center border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-                onClick={() => setGuests(Math.max(1, guests - 1))}
-              >
-                -
-              </button>
-              <span className="text-gray-700 dark:text-gray-300 min-w-[2ch] text-center">{guests}</span>
-              <button 
-                type="button"
-                className="w-8 h-8 rounded-full flex items-center justify-center border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-                onClick={() => setGuests(guests + 1)}
-              >
-                +
-              </button>
-            </div>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsGuestDropdownOpen(!isGuestDropdownOpen)}
+              className="w-full flex items-center text-left"
+            >
+              <Users className="text-gray-400 mr-2" size={18} />
+              <span className="text-gray-700 dark:text-gray-300">{guests} Guest{guests !== 1 ? 's' : ''}</span>
+            </button>
+
+            {isGuestDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-4 z-50">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">Guests</span>
+                  <div className="flex items-center space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => handleGuestChange(false)}
+                      className="p-1 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <span className="text-gray-700 dark:text-gray-300 min-w-[2ch] text-center">{guests}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleGuestChange(true)}
+                      className="p-1 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
